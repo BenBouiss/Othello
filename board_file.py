@@ -1,17 +1,10 @@
 import numpy as np
 import string
-import pawn
+import pawn_file
+import utils
 
 WIDTH = 8
 LENGTH = 8
-
-LETTER_TO_COORD_DICT = dict()
-for index, letter in enumerate(string.ascii_uppercase):
-   LETTER_TO_COORD_DICT[letter] = index
-
-
-def Convert_str_coord(Coord_str:str):
-    return LETTER_TO_COORD_DICT[Coord_str[0]], int(Coord_str[1:])-1
 
 class Board(object):
     def __init__(self):
@@ -19,8 +12,8 @@ class Board(object):
         self.Pawn_list = []
     def place_pawn(self, Coord_tar_str, couleur):
         ### le if pour savoir si place libre fais avant normalement
-        x, y = Convert_str_coord(Coord_tar_str)
-        Pawn = pawn.pawn(couleur, pos = (x, y))
+        x, y = utils.Convert_str_coord(Coord_tar_str)
+        Pawn = pawn_file.pawn(couleur, pos = (x, y))
         self.board[y, x] = Pawn
         self.Pawn_list.append(Pawn)
 
