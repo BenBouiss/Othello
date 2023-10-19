@@ -1,4 +1,4 @@
-import board
+import board_file
 import pawn 
 
 class engine(object):
@@ -18,7 +18,7 @@ class engine(object):
             Coord_to_invert = []
             while sliding:
                 x_tar, y_tar += (x,y) + Slide_directions[i]
-                if 0<= x_tar < board.WIDTH and 0<= x_tar < board.LENGTH:
+                if 0<= x_tar < board_file.WIDTH and 0<= x_tar < board_file.LENGTH:
                     if Board[y_tar, x_tar].isinstance(pawn.pawn):
                         if Board[y_tar, x_tar].couleur == pawn.Retournement_valeur(Pawn_placed.couleur):
                             Coord_to_invert.append((x_tar, y_tar))
@@ -28,6 +28,7 @@ class engine(object):
                         sliding = False
                 else: 
                     sliding = False
+
 
 class Joueur(object):
     def __init__(self, couleur):
@@ -39,5 +40,6 @@ class Joueur_humain(Joueur):
     def __init__(self, couleur):
         super().__init__(couleur)
     
-    def Choix_pawn(self):
-        pass
+    def Choix_pawn(self, Board):
+        Choix = input("Please input coordinates where to put your next pawn (exemple : A1)")
+        
