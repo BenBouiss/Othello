@@ -20,10 +20,15 @@ class engine(object):
         for i in range(8):
             sliding = True
             Coord_to_invert = []
+            x_tar, y_tar = x, y
             while sliding:
-                x_tar, y_tar += (x,y) + Slide_directions[i]
+                x_tar += Slide_directions[i][0]
+                y_tar += Slide_directions[i][1]
+                #print(Board.board[y_tar, x_tar])
                 if 0<= x_tar < board_file.WIDTH and 0<= x_tar < board_file.LENGTH:
-                    if Board.board[y_tar, x_tar].isinstance(pawn_file.pawn):
+                    #if Board.board[y_tar, x_tar].isinstance(pawn_file.pawn):
+                    if Board.board[y_tar, x_tar] != board_file.NULL_VALUE:
+                        #print(type(Board.board[y_tar, x_tar]))
                         if Board.board[y_tar, x_tar].couleur == pawn_file.Retournement_valeur(Pawn_placed.couleur):
                             Coord_to_invert.append((x_tar, y_tar))
                         else:
@@ -36,4 +41,7 @@ class engine(object):
     
     def Inverts_pawns(self, Board: object, List_coord_to_invert:list):
         for coord in List_coord_to_invert:
-            pass
+            x, y = coord
+            pawn = Board.board[y, x]
+            pawn.retournement()
+        return Board

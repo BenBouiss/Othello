@@ -6,9 +6,10 @@ import utils
 WIDTH = 8
 LENGTH = 8
 
+NULL_VALUE = ' '
 class Board(object):
     def __init__(self):
-        self.board = np.array([''] * WIDTH * LENGTH).reshape((LENGTH,WIDTH))
+        self.board = np.array([NULL_VALUE] * WIDTH * LENGTH).reshape((LENGTH,WIDTH)).astype(dtype='object')
         self.Pawn_list = []
     def place_pawn(self, Coord_tar_str, couleur):
         ### le if pour savoir si place libre fais avant normalement
@@ -24,4 +25,4 @@ class Board(object):
         self.place_pawn('E5', 'X')
 
     def print_board(self):
-        pass
+        print(self.board.astype(str))
