@@ -118,7 +118,7 @@ if __name__ == '__main__':
     i = 0
     col_names = ["Id_joueur", "Strategy", "Max_Score","History"]
     df = pd.DataFrame(columns = col_names)
-    Nbr_iter = 100
+    Nbr_iter = 500
     print(f'Starting {Nbr_iter} iterations')
     while i<Nbr_iter:
         if GUI_PYGAME_SHOW:
