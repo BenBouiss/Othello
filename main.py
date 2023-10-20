@@ -10,7 +10,7 @@ import time
 import pandas as pd
 import os
 
-GUI_PYGAME_SHOW = False
+GUI_PYGAME_SHOW = True
 PRINT_SHOW = False
 
 Game_board = board_file.Board()
