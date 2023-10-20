@@ -8,17 +8,24 @@ import GUI_pygame
 import pygame as p
 import time
 import pandas as pd
+import os
+
+GUI_PYGAME_SHOW = False
+PRINT_SHOW = False
 
 Game_board = board_file.Board()
 Game_board.init_table()
-gui_n = GUI.Gui()
-gui = GUI_pygame.SCREEN()
+
+if GUI_PYGAME_SHOW:
+    gui_n = GUI.Gui()
+    gui = GUI_pygame.SCREEN()
 
 ENGINE = engine_file.engine()
 
 #print(Game_board.board.astype(str))
-gui_n.Pretty_print(Game_board.board)
-print(utils.Convert_str_coord('D4'))
+if PRINT_SHOW:
+    gui_n.Pretty_print(Game_board.board)
+    print(utils.Convert_str_coord('D4'))
 
 
 
@@ -45,12 +52,14 @@ def main():
 def Deroulement_tour_bot(Player_list, i):
     Current_player = Player_list[i%2]
     Current_player.Make_move(Game_board)
-    gui.update_screen_board(Game_board.board)
+    if GUI_PYGAME_SHOW:
+        gui.update_screen_board(Game_board.board)
     i+=1
     player_check = Player_list[i%2]
     Permuts = ENGINE.Get_all_permutationAble_squares(Game_board, player_check.couleur)
     if len(Permuts) == 0:
-        print(f'No more valid move for player : {player_check.couleur} ')
+        if PRINT_SHOW:
+            print(f'No more valid move for player : {player_check.couleur} ')
         p.quit()
         return 0, i
     return 2, i
@@ -109,28 +118,35 @@ if __name__ == '__main__':
     i = 0
     col_names = ["Id_joueur", "Strategy", "Max_Score","History"]
     df = pd.DataFrame(columns = col_names)
-    while i<1:
-        gui_n = GUI.Gui()
-        gui = GUI_pygame.SCREEN()
-
+    Nbr_iter = 100
+    print(f'Starting {Nbr_iter} iterations')
+    while i<Nbr_iter:
+        if GUI_PYGAME_SHOW:
+            gui_n = GUI.Gui()
+            gui = GUI_pygame.SCREEN()
         ENGINE = engine_file.engine()
+
         Player_list = []
-        #Player_list.append(Player_file.Joueur_humain('O'))
-        #Player_list.append(Player_file.Joueur_humain('X'))
         Player_list.append(Player_file.Joueur_ordinateur('O'))
         Player_list.append(Player_file.Joueur_ordinateur('X'))
+
         Game_board = board_file.Board()
         Game_board.init_table()
+
         p_list = main_pygame()
         i+=1
-        print(f'Score history of player 1 {p_list[0].Score_l}')
-        print(f'Score history of player 2 {p_list[1].Score_l}')
+        if PRINT_SHOW:
+            print(f'Score history of player 1 {p_list[0].Score_l}')
+            print(f'Score history of player 2 {p_list[1].Score_l}')
 
-        df = df.append(pd.DataFrame(
+        df = pd.concat([df, pd.DataFrame(
             [['1', p_list[0].Strategy, p_list[0].Score, p_list[0].Score_l]],columns = col_names
-            ), ignore_index = True)
+        )], ignore_index = True)
         
-        df = df.append(pd.DataFrame(
+        df = pd.concat([df, pd.DataFrame(
             [['2', p_list[1].Strategy, p_list[1].Score, p_list[1].Score_l]],columns = col_names
-        ), ignore_index = True)
-    print(df)
+        )], ignore_index = True)
+    __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
+
+    print(__location__)
+    df.to_csv(os.path.join(__location__, f'Stat_store/Stat_{time.time()}_iter_{int(len(df)/2)}.csv'))
