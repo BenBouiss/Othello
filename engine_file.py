@@ -61,7 +61,7 @@ class engine(object):
         Coords = np.where(Board.board == board_file.NULL_VALUE)
         valid_placement = []
         x_t, y_t = Coords[1], Coords[0]
-        for y, x in zip(x_t, y_t):
+        for x, y in zip(x_t, y_t):
             Pawn_placed = pawn_file.pawn(couleur, (x,y))
             Permuts = self.verify_move(Board, Pawn_placed)
             if Permuts != None:
