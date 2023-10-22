@@ -10,8 +10,10 @@ import time
 import pandas as pd
 import os
 
-GUI_PYGAME_SHOW = True
+GUI_PYGAME_SHOW = False
 PRINT_SHOW = False
+SAVE_CSV_FILE = False
+
 
 Game_board = board_file.Board()
 Game_board.init_table()
@@ -118,7 +120,7 @@ if __name__ == '__main__':
     i = 0
     col_names = ["Id_joueur", "Strategy", "Max_Score","History"]
     df = pd.DataFrame(columns = col_names)
-    Nbr_iter = 500
+    Nbr_iter = 10
     print(f'Starting {Nbr_iter} iterations')
     while i<Nbr_iter:
         if GUI_PYGAME_SHOW:
@@ -149,4 +151,5 @@ if __name__ == '__main__':
     __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
 
     print(__location__)
-    df.to_csv(os.path.join(__location__, f'Stat_store/Stat_{time.time()}_iter_{int(len(df)/2)}.csv'))
+    if SAVE_CSV_FILE:
+        df.to_csv(os.path.join(__location__, f'Stat_store/Stat_{time.time()}_iter_{int(len(df)/2)}.csv'))
