@@ -12,15 +12,15 @@ import os
 
 GUI_PYGAME_SHOW = True
 PRINT_SHOW = False
-SAVE_CSV_FILE = True
+SAVE_CSV_FILE = False
 
 
 Game_board = board_file.Board()
 Game_board.init_table()
 
-if GUI_PYGAME_SHOW:
-    gui_n = GUI.Gui()
-    gui = GUI_pygame.SCREEN()
+#if GUI_PYGAME_SHOW:
+#    gui_n = GUI.Gui()
+#    gui = GUI_pygame.SCREEN()
 
 ENGINE = engine_file.engine()
 
@@ -129,21 +129,27 @@ if __name__ == '__main__':
         ENGINE = engine_file.engine()
 
         Player_list = []
-        #Player_list.append(Player_file.Joueur_ordinateur('O'))
-        ### Ordinateur exploration depth 3 contre dumb version
-        Player_list.append(Player_file.Joueur_ordinateur('O', Strategy="Exploration", Depth=4))
-        Player_list.append(Player_file.Joueur_ordinateur('X', Strategy="Exploration_spatial", Depth=4))
+        
+        ### Ordinateur exploration depth 3 contre version spatial exploration
+        #Player_list.append(Player_file.Joueur_ordinateur('O', Strategy="Exploration", Depth=4))
+        #Player_list.append(Player_file.Joueur_ordinateur('X', Strategy="Exploration_spatial", Depth=4))
 
         ### Joueur contre Joueur
-        #Player_list.append(Player_file.Joueur_humain('0'))
+        #Player_list.append(Player_file.Joueur_humain('O'))
         #Player_list.append(Player_file.Joueur_humain('X'))
 
-        #Player_list.append(Player_file.Joueur_ordinateur('X'))
-        #Player_list.append(Player_file.Joueur_ordinateur('X', Strategy="Exploration", Depth=3))
+        ### Ordinateur méthode exploration(O) vs humain(X)
+        #Player_list.append(Player_file.Joueur_ordinateur('O', Strategy="Exploration", Depth=3))
+        #Player_list.append(Player_file.Joueur_humain('X'))
+
+        ### Dumb vs Dumb
+        Player_list.append(Player_file.Joueur_ordinateur('O'))
+        Player_list.append(Player_file.Joueur_ordinateur('X'))
+
+        ### Humain(O) vs dumb(X)
+        #Player_list.append(Player_file.Joueur_humain('O'))
         #Player_list.append(Player_file.Joueur_ordinateur('X'))
 
-        #Player_list.append(Player_file.Joueur_ordinateur('O'))
-        #Player_list.append(Player_file.Joueur_ordinateur('X'))
         Game_board = board_file.Board()
         Game_board.init_table()
 
