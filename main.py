@@ -10,7 +10,7 @@ import time
 import pandas as pd
 import os
 
-GUI_PYGAME_SHOW = False
+GUI_PYGAME_SHOW = True
 PRINT_SHOW = False
 SAVE_CSV_FILE = True
 
@@ -120,7 +120,7 @@ if __name__ == '__main__':
     i = 0
     col_names = ["Id_joueur", "Strategy","Depth", "Max_Score","History"]
     df = pd.DataFrame(columns = col_names)
-    Nbr_iter = 100
+    Nbr_iter = 50
     print(f'Starting {Nbr_iter} iterations')
     while i<Nbr_iter:
         if GUI_PYGAME_SHOW:
@@ -132,7 +132,7 @@ if __name__ == '__main__':
         #Player_list.append(Player_file.Joueur_ordinateur('O'))
         ### Ordinateur exploration depth 3 contre dumb version
         Player_list.append(Player_file.Joueur_ordinateur('O', Strategy="Exploration", Depth=3))
-        Player_list.append(Player_file.Joueur_ordinateur('X'))
+        Player_list.append(Player_file.Joueur_ordinateur('X', Strategy="Exploration_spatial", Depth=3))
 
         ### Joueur contre Joueur
         #Player_list.append(Player_file.Joueur_humain('0'))
@@ -166,7 +166,7 @@ if __name__ == '__main__':
         __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
 
         print(__location__)
-        df.to_csv(os.path.join(__location__, f'Stat_store/Stat_{time.time()}_iter_{int(len(df)/2)}.csv'))
+        df.to_csv(os.path.join(__location__, f'Stat_store/Stat_{int(time.time())}_iter_{int(len(df)/2)}.csv'))
         __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
 
         print(__location__)

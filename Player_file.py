@@ -78,6 +78,9 @@ class Joueur_ordinateur(Joueur):
         if self.Strategy == 'Exploration':
             self.Make_move_exploration(Board, Player)
 
+        if self.Strategy == 'Exploration_spatial':
+            self.Make_move_exploration(Board, Player, Score_type= "Spatial")
+
     def Make_move_dumb(self, Board : object):
         
         All_moves = ENGINE.Get_all_permutationAble_squares(Board, self.couleur)
@@ -97,8 +100,8 @@ class Joueur_ordinateur(Joueur):
     
 
 
-    def Make_move_exploration(self, Board:object, Player : object):
-        Best_score, Best_move = EXPLORATION.Explore_moves(Board, Player, Turn = 0, Depth=self.Depth)
+    def Make_move_exploration(self, Board:object, Player : object, Score_type = "Standard"):
+        Best_score, Best_move = EXPLORATION.Explore_moves(Board, Player, Turn = 0, Depth=self.Depth, Score_type = Score_type)
         #print(f'Selected Move : {Random_move} destination : {Board.board[Random_move[1], Random_move[0]]}')
         pos_str = utils.Convert_coord_to_string(Best_move)
         Board.place_pawn(pos_str, self.couleur)

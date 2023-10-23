@@ -3,9 +3,16 @@ import copy
 import utils
 import pawn_file
 import numpy as np
+import board_file
 
 ENGINE = engine_file.engine()
 
+y_center = board_file.LENGTH/2
+x_center = board_file.WIDTH/2
+HEATMAP = np.zeros((8, 8 ))
+for y, row in enumerate(HEATMAP):
+    for x, e in enumerate(row):
+        HEATMAP[y, x] = min((y-y_center+1)**2, (y-y_center)**2) + min((x-x_center+1)**2, (x-x_center)**2)
 
 class Exploration(object):
     def __init__(self):
@@ -20,13 +27,29 @@ class Exploration(object):
         #print(Joueur.Score)
         return Joueur.Score
 
-    def Explore_moves(self, Board: object, Player: object, Turn : int, Depth = 1):
+    def Spatial_score(self, Joueur:object, Board: object):
+        Score = 0
+        for pawn in Board.Pawn_list:
+            if pawn.couleur == Joueur.couleur:
+                modifier = 1
+            else:
+                modifier = -1
+            x, y = pawn.pos
+            Score += HEATMAP[y, x] * modifier
+
+        return Score
+
+    def Explore_moves(self, Board: object, Player: object, Turn : int, Depth, Score_type):
         #Current_player = Joueur_liste[Turn%2]
         
         
         All_moves = ENGINE.Get_all_permutationAble_squares(Board, Player.couleur)
         if Depth == 0 or All_moves == []:
-            return self.Score(Player), None
+            if Score_type == "Standard":
+                return self.Score(Player), None
+            if Score_type == "Spatial":
+                return self.Spatial_score(Player, Board), None
+            
         Scores_l = []
         for moves in All_moves:
             Player2 = copy.deepcopy(Player)
@@ -41,7 +64,7 @@ class Exploration(object):
             Player2.Score = ENGINE.Count_score(Board2, Player2.couleur)
             Player2.Score_l.append(self.Score)
 
-            Scores_predi, _ = self.Explore_moves(Board2, Player2, Turn+1, Depth-1)
+            Scores_predi, _ = self.Explore_moves(Board2, Player2, Turn+1, Depth-1, Score_type)
             Scores_l.append(Scores_predi)
 
         if len(Scores_l) != 0:
