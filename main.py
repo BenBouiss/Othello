@@ -135,16 +135,16 @@ if __name__ == '__main__':
         #Player_list.append(Player_file.Joueur_ordinateur('X', Strategy="Exploration_spatial", Depth=4))
 
         ### Joueur contre Joueur
-        #Player_list.append(Player_file.Joueur_humain('O'))
-        #Player_list.append(Player_file.Joueur_humain('X'))
+        Player_list.append(Player_file.Joueur_humain('O'))
+        Player_list.append(Player_file.Joueur_humain('X'))
 
         ### Ordinateur méthode exploration(O) vs humain(X)
         #Player_list.append(Player_file.Joueur_ordinateur('O', Strategy="Exploration", Depth=3))
         #Player_list.append(Player_file.Joueur_humain('X'))
 
         ### Dumb vs Dumb
-        Player_list.append(Player_file.Joueur_ordinateur('O'))
-        Player_list.append(Player_file.Joueur_ordinateur('X'))
+        #Player_list.append(Player_file.Joueur_ordinateur('O'))
+        #Player_list.append(Player_file.Joueur_ordinateur('X'))
 
         ### Humain(O) vs dumb(X)
         #Player_list.append(Player_file.Joueur_humain('O'))
