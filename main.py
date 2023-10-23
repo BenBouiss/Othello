@@ -120,7 +120,7 @@ if __name__ == '__main__':
     i = 0
     col_names = ["Id_joueur", "Strategy","Depth", "Max_Score","History"]
     df = pd.DataFrame(columns = col_names)
-    Nbr_iter = 50
+    Nbr_iter = 20
     print(f'Starting {Nbr_iter} iterations')
     while i<Nbr_iter:
         if GUI_PYGAME_SHOW:
@@ -131,8 +131,8 @@ if __name__ == '__main__':
         Player_list = []
         #Player_list.append(Player_file.Joueur_ordinateur('O'))
         ### Ordinateur exploration depth 3 contre dumb version
-        Player_list.append(Player_file.Joueur_ordinateur('O', Strategy="Exploration", Depth=3))
-        Player_list.append(Player_file.Joueur_ordinateur('X', Strategy="Exploration_spatial", Depth=3))
+        Player_list.append(Player_file.Joueur_ordinateur('O', Strategy="Exploration", Depth=4))
+        Player_list.append(Player_file.Joueur_ordinateur('X', Strategy="Exploration_spatial", Depth=4))
 
         ### Joueur contre Joueur
         #Player_list.append(Player_file.Joueur_humain('0'))

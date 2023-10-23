@@ -3,15 +3,17 @@ My repository for the object oriented programming python project on the Othello 
 
 # Librairy requirements:
 "Exotic" libs:
-- Pygame (GUI)
-- Numpy
-- Pandas
 - matplotlib
+- numpy
+- pandas
+- pygame (GUI)
+
 
 Built-ins:
-- String
-- time
-- os
-- copy
 - ast
+- copy
 - glob
+- os
+- string
+- time
+
