@@ -108,7 +108,7 @@ def main_pygame():
             while Flag == 1:
                 Flag, i = Deroulement_tour_humain(Player_list, i)
         elif Current_player.Type == "AI":
-            #time.sleep(0.5)
+            time.sleep(0.5)
             Flag, i = Deroulement_tour_bot(Player_list, i)
             
         if Flag == 0:
