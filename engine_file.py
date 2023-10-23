@@ -48,7 +48,7 @@ class engine(object):
             pawn.retournement()
         return Board, len(List_coord_to_invert)
     
-    def Count_score(self, Board:object, couleur:str):
+    def Count_score_slow(self, Board:object, couleur:str):
         Counter = 0
         for row in Board.board:
             for e in row:
@@ -57,6 +57,13 @@ class engine(object):
                         Counter+=1
         return Counter
     
+    def Count_score(self, Board:object, couleur:str):
+        Counter = 0
+        for pawn in Board.Pawn_list:
+            if pawn.couleur == couleur:
+                Counter+=1
+        return Counter
+
     def Get_all_permutationAble_squares(self, Board:object, couleur:str):
         Coords = np.where(Board.board == board_file.NULL_VALUE)
         valid_placement = []

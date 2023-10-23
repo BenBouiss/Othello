@@ -12,7 +12,7 @@ import os
 
 GUI_PYGAME_SHOW = False
 PRINT_SHOW = False
-SAVE_CSV_FILE = False
+SAVE_CSV_FILE = True
 
 
 Game_board = board_file.Board()
@@ -53,7 +53,7 @@ def main():
 
 def Deroulement_tour_bot(Player_list, i):
     Current_player = Player_list[i%2]
-    Current_player.Make_move(Game_board)
+    Current_player.Make_move(Game_board, Current_player)
     if GUI_PYGAME_SHOW:
         gui.update_screen_board(Game_board.board)
     i+=1
@@ -110,7 +110,7 @@ def main_pygame():
         elif Current_player.Type == "AI":
             #time.sleep(0.5)
             Flag, i = Deroulement_tour_bot(Player_list, i)
-
+            
         if Flag == 0:
             running = False
         #print(Flag, i)
@@ -118,9 +118,9 @@ def main_pygame():
 
 if __name__ == '__main__':
     i = 0
-    col_names = ["Id_joueur", "Strategy", "Max_Score","History"]
+    col_names = ["Id_joueur", "Strategy","Depth", "Max_Score","History"]
     df = pd.DataFrame(columns = col_names)
-    Nbr_iter = 10
+    Nbr_iter = 100
     print(f'Starting {Nbr_iter} iterations')
     while i<Nbr_iter:
         if GUI_PYGAME_SHOW:
@@ -129,9 +129,21 @@ if __name__ == '__main__':
         ENGINE = engine_file.engine()
 
         Player_list = []
-        Player_list.append(Player_file.Joueur_ordinateur('O'))
+        #Player_list.append(Player_file.Joueur_ordinateur('O'))
+        ### Ordinateur exploration depth 3 contre dumb version
+        Player_list.append(Player_file.Joueur_ordinateur('O', Strategy="Exploration", Depth=3))
         Player_list.append(Player_file.Joueur_ordinateur('X'))
 
+        ### Joueur contre Joueur
+        #Player_list.append(Player_file.Joueur_humain('0'))
+        #Player_list.append(Player_file.Joueur_humain('X'))
+
+        #Player_list.append(Player_file.Joueur_ordinateur('X'))
+        #Player_list.append(Player_file.Joueur_ordinateur('X', Strategy="Exploration", Depth=3))
+        #Player_list.append(Player_file.Joueur_ordinateur('X'))
+
+        #Player_list.append(Player_file.Joueur_ordinateur('O'))
+        #Player_list.append(Player_file.Joueur_ordinateur('X'))
         Game_board = board_file.Board()
         Game_board.init_table()
 
@@ -141,15 +153,20 @@ if __name__ == '__main__':
             print(f'Score history of player 1 {p_list[0].Score_l}')
             print(f'Score history of player 2 {p_list[1].Score_l}')
 
-        df = pd.concat([df, pd.DataFrame(
-            [['1', p_list[0].Strategy, p_list[0].Score, p_list[0].Score_l]],columns = col_names
-        )], ignore_index = True)
-        
-        df = pd.concat([df, pd.DataFrame(
-            [['2', p_list[1].Strategy, p_list[1].Score, p_list[1].Score_l]],columns = col_names
-        )], ignore_index = True)
-    __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
-
-    print(__location__)
+        if SAVE_CSV_FILE:
+            df = pd.concat([df, pd.DataFrame(
+                [['1', p_list[0].Strategy, p_list[0].Depth , p_list[0].Score, p_list[0].Score_l]],columns = col_names
+            )], ignore_index = True)
+            
+            df = pd.concat([df, pd.DataFrame(
+                [['2', p_list[1].Strategy, p_list[1].Depth, p_list[1].Score, p_list[1].Score_l]],columns = col_names
+            )], ignore_index = True)
+            
     if SAVE_CSV_FILE:
+        __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
+
+        print(__location__)
         df.to_csv(os.path.join(__location__, f'Stat_store/Stat_{time.time()}_iter_{int(len(df)/2)}.csv'))
+        __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
+
+        print(__location__)

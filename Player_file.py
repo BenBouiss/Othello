@@ -6,9 +6,10 @@ import GUI
 import numpy as np
 gui_n = GUI.Gui()
 ENGINE = engine.engine()
+import Exploration_part
 
 #BOARD = board_file.Board()
-
+EXPLORATION = Exploration_part.Exploration()
 
 
 class Joueur(object):
@@ -65,14 +66,17 @@ class Joueur_humain(Joueur):
             return True
     
 class Joueur_ordinateur(Joueur):
-    def __init__(self, couleur, Strategy = "Dumb"):
+    def __init__(self, couleur, Strategy = "Dumb", Depth = 1):
         super().__init__(couleur)
         self.Strategy = Strategy
         self.Type = "AI"
+        self.Depth = Depth
 
-    def Make_move(self, Board:object):
-        if self.Strategy== 'Dumb':
+    def Make_move(self, Board:object, Player : object):
+        if self.Strategy == 'Dumb':
             self.Make_move_dumb(Board)
+        if self.Strategy == 'Exploration':
+            self.Make_move_exploration(Board, Player)
 
     def Make_move_dumb(self, Board : object):
         
@@ -90,3 +94,17 @@ class Joueur_ordinateur(Joueur):
         self.Score = ENGINE.Count_score(Board, self.couleur)
         self.Score_l.append(self.Score)
         return True
+    
+
+
+    def Make_move_exploration(self, Board:object, Player : object):
+        Best_score, Best_move = EXPLORATION.Explore_moves(Board, Player, Turn = 0, Depth=self.Depth)
+        #print(f'Selected Move : {Random_move} destination : {Board.board[Random_move[1], Random_move[0]]}')
+        pos_str = utils.Convert_coord_to_string(Best_move)
+        Board.place_pawn(pos_str, self.couleur)
+        Pawn_placed = pawn_file.pawn(self.couleur, Best_move)
+        permuts = ENGINE.verify_move(Board, Pawn_placed)
+
+        Board, nbr_permutted = ENGINE.Inverts_pawns(Board, permuts)
+        self.Score = ENGINE.Count_score(Board, self.couleur)
+        self.Score_l.append(self.Score)
