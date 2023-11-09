@@ -1,5 +1,5 @@
 import string
-
+import pandas as pd
 
 
 LETTER_TO_COORD_DICT = dict()
@@ -15,3 +15,21 @@ def Convert_coord_to_string(pos:tuple):
 def Convert_mouse_pos_x_y_to_ind(pos: tuple, CELL_WIDTH = 64, CELL_HEIGHT = 64):
     x, y= pos
     return x // CELL_WIDTH, y // CELL_HEIGHT
+
+def Convert_cprofile_to_dataframe(profiler_results):
+    data=[]
+    started=False
+
+    for l in profiler_results.stdout.split("\n"):
+        if not started:
+            if l=="   ncalls  tottime  percall  cumtime  percall filename:lineno(function)":
+                started=True
+                data.append(l)
+        else:
+            data.append(l)
+    content=[]
+    for l in data:
+        fs = l.find(" ",8)
+        content.append(tuple([l[0:fs] , l[fs:fs+9], l[fs+9:fs+18], l[fs+18:fs+27], l[fs+27:fs+36], l[fs+36:]]))
+    prof_df = pd.DataFrame(content[1:], columns=content[0])
+    return prof_df

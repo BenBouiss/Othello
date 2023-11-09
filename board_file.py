@@ -18,6 +18,10 @@ class Board(object):
         self.board[y, x] = Pawn
         self.Pawn_list.append(Pawn)
 
+    def remove_pawn(self, Coord_tar_str):
+        x, y = utils.Convert_str_coord(Coord_tar_str)
+        self.board[y, x] = NULL_VALUE
+
     def init_table(self):
         self.place_pawn('E4', 'O')
         self.place_pawn('D5', 'O')

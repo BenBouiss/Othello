@@ -39,7 +39,7 @@ class Exploration(object):
 
         return Score
 
-    def Explore_moves(self, Board: object, Player: object, Turn : int, Depth, Score_type):
+    def Explore_moves_slow(self, Board: object, Player: object, Turn : int, Depth, Score_type):
         #Current_player = Joueur_liste[Turn%2]
         
         
@@ -66,6 +66,51 @@ class Exploration(object):
 
             Scores_predi, _ = self.Explore_moves(Board2, Player2, Turn+1, Depth-1, Score_type)
             Scores_l.append(Scores_predi)
+
+        if len(Scores_l) != 0:
+            arr = np.array(Scores_l)
+            if Turn%2 == 0:
+                Best_score = arr.max()
+            else:
+                Best_score = arr.min()
+
+            Select_mask = arr == Best_score
+            Best_arr = np.array(All_moves)[Select_mask]
+            #print(Scores_l, All_moves, Select_mask)
+            rand_ind = np.random.choice(len(Best_arr))
+            Rand_best = Best_arr[rand_ind]
+            #print(f'Turn : {Turn} Decision for player : {Player.couleur} best move : {Rand_best} with score {Best_score} \n All other : {All_moves} with scores : {Scores_l}')
+            return Best_score, Rand_best
+    def Explore_moves(self, Board: object, Player: object, Turn : int, Depth, Score_type):
+        #Current_player = Joueur_liste[Turn%2]
+        
+        
+        All_moves = ENGINE.Get_all_permutationAble_squares(Board, Player.couleur)
+        if Depth == 0 or All_moves == []:
+            if Score_type == "Standard":
+                return self.Score(Player), None
+            if Score_type == "Spatial":
+                return self.Spatial_score(Player, Board), None
+            
+        Scores_l = []
+        for moves in All_moves:
+            pos_str = utils.Convert_coord_to_string(moves)
+            Board.place_pawn(pos_str, Player.couleur)
+
+            Pawn_placed = pawn_file.pawn(Player.couleur, moves)
+            permuts = ENGINE.verify_move(Board, Pawn_placed)
+            Board, nbr_permutted = ENGINE.Inverts_pawns(Board, permuts)
+
+            Player.Score = ENGINE.Count_score(Board, Player.couleur)
+            Player.Score_l.append(self.Score)
+
+            Scores_predi, _ = self.Explore_moves(Board, Player, Turn+1, Depth-1, Score_type)
+            Scores_l.append(Scores_predi)
+
+            ### Clean up
+            Player.Undo_move()
+            Board.remove_pawn(pos_str)
+            Board, nbr_permutted = ENGINE.Inverts_pawns(Board, permuts)
 
         if len(Scores_l) != 0:
             arr = np.array(Scores_l)

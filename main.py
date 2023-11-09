@@ -9,11 +9,13 @@ import pygame as p
 import time
 import pandas as pd
 import os
+import cProfile
+
 
 GUI_PYGAME_SHOW = True
 PRINT_SHOW = False
 SAVE_CSV_FILE = False
-
+RUN_CPROFILER = True
 
 Game_board = board_file.Board()
 Game_board.init_table()
@@ -108,7 +110,7 @@ def main_pygame():
             while Flag == 1:
                 Flag, i = Deroulement_tour_humain(Player_list, i)
         elif Current_player.Type == "AI":
-            time.sleep(0.5)
+            #time.sleep(0.5)
             Flag, i = Deroulement_tour_bot(Player_list, i)
             
         if Flag == 0:
@@ -130,13 +132,13 @@ if __name__ == '__main__':
 
         Player_list = []
         
-        ### Ordinateur exploration depth 3 contre version spatial exploration
-        #Player_list.append(Player_file.Joueur_ordinateur('O', Strategy="Exploration", Depth=4))
-        #Player_list.append(Player_file.Joueur_ordinateur('X', Strategy="Exploration_spatial", Depth=4))
+        ### Ordinateur exploration depth 4 contre version spatial exploration
+        Player_list.append(Player_file.Joueur_ordinateur('O', Strategy="Exploration", Depth=4))
+        Player_list.append(Player_file.Joueur_ordinateur('X', Strategy="Exploration_spatial", Depth=4))
 
         ### Joueur contre Joueur
-        Player_list.append(Player_file.Joueur_humain('O'))
-        Player_list.append(Player_file.Joueur_humain('X'))
+        #Player_list.append(Player_file.Joueur_humain('O'))
+        #Player_list.append(Player_file.Joueur_humain('X'))
 
         ### Ordinateur méthode exploration(O) vs humain(X)
         #Player_list.append(Player_file.Joueur_ordinateur('O', Strategy="Exploration", Depth=3))
@@ -152,8 +154,20 @@ if __name__ == '__main__':
 
         Game_board = board_file.Board()
         Game_board.init_table()
+        if RUN_CPROFILER:
+            prof = cProfile.Profile()
+            with cProfile.Profile() as pr:
+                p_list = main_pygame()
+            df = pd.DataFrame(pr.getstats(),
+            columns=['func', 'ncalls', 'ccalls', 'tottime', 'cumtime', 'callers']
+            ).sort_values(by = "cumtime", ascending=False)
+            df.to_csv()
+            __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
 
-        p_list = main_pygame()
+            print(__location__)
+            df.to_csv(os.path.join(__location__, f'Stat_store/Function_call_{int(time.time())}_iter_{int(len(df)/2)}.csv'))
+        else:
+            p_list = main_pygame()
         i+=1
         if PRINT_SHOW:
             print(f'Score history of player 1 {p_list[0].Score_l}')

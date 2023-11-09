@@ -16,8 +16,11 @@ class Joueur(object):
     def __init__(self, couleur):
         self.couleur = couleur
         self.Score = 0
-        self.Score_l = []
-
+        self.Score_l = [0]
+    def Undo_move(self):
+        self.Score_l.pop()
+        self.Score = self.Score_l[-1]
+        
 class Joueur_humain(Joueur):
     def __init__(self, couleur):
         super().__init__(couleur)
@@ -40,7 +43,8 @@ class Joueur_humain(Joueur):
         #Board, nbr_permutted = ENGINE.Inverts_pawns(Board, self.permuts)
         #self.Score = ENGINE.Count_score(Board, self.couleur)
         #self.Score_l.append(self.Score)
-    
+
+
     def Logic_after_placement(self, Board):
         Board.place_pawn(self.Choix, self.couleur)
         Board, nbr_permutted = ENGINE.Inverts_pawns(Board, self.permuts)
