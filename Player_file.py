@@ -25,7 +25,7 @@ class Joueur_humain(Joueur):
     def __init__(self, couleur):
         super().__init__(couleur)
         self.Type = "Humain"
-
+        
     def Choix_pawn(self, Board:object):
         self.Choix = input("Please input coordinates where to put your next pawn (exemple : A1):  ")
         Coord = utils.Convert_str_coord(self.Choix)
@@ -75,7 +75,7 @@ class Joueur_ordinateur(Joueur):
         self.Strategy = Strategy
         self.Type = "AI"
         self.Depth = Depth
-
+        
     def Make_move(self, Board:object, Player : object):
         if self.Strategy == 'Dumb':
             self.Make_move_dumb(Board)
@@ -115,3 +115,6 @@ class Joueur_ordinateur(Joueur):
         Board, nbr_permutted = ENGINE.Inverts_pawns(Board, permuts)
         self.Score = ENGINE.Count_score(Board, self.couleur)
         self.Score_l.append(self.Score)
+        
+        
+        

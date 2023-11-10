@@ -7,6 +7,10 @@ WIDTH = 8
 LENGTH = 8
 
 NULL_VALUE = ' '
+value_mask = {
+            "O" : 1,
+            "X" : -1
+        }
 class Board(object):
     def __init__(self):
         self.board = np.array([NULL_VALUE] * WIDTH * LENGTH).reshape((LENGTH,WIDTH)).astype(dtype='object')
@@ -30,3 +34,11 @@ class Board(object):
 
     def print_board(self):
         print(self.board.astype(str))
+        
+    def Get_board_mask(self):
+        b = self.board.astype(str)
+        tmp = np.zeros(b.shape)
+        for i, e in enumerate(np.unique(b)):
+            if e!= NULL_VALUE:
+                tmp[b==e] = value_mask[e]
+        return tmp

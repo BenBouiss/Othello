@@ -4,6 +4,7 @@ import utils
 import pawn_file
 import numpy as np
 import board_file
+import time
 
 ENGINE = engine_file.engine()
 
@@ -17,7 +18,6 @@ for y, row in enumerate(HEATMAP):
 class Exploration(object):
     def __init__(self):
         pass
-
     def Score_compare(self, Board:object, Joueur_liste: list):
         Score_1 = ENGINE.Count_score(Board, Joueur_liste[0].couleur)
         Score_2 = ENGINE.Count_score(Board, Joueur_liste[1].couleur)
@@ -27,7 +27,7 @@ class Exploration(object):
         #print(Joueur.Score)
         return Joueur.Score
 
-    def Spatial_score(self, Joueur:object, Board: object):
+    def Spatial_score_slow(self, Joueur:object, Board: object):
         Score = 0
         for pawn in Board.Pawn_list:
             if pawn.couleur == Joueur.couleur:
@@ -38,6 +38,16 @@ class Exploration(object):
             Score += HEATMAP[y, x] * modifier
 
         return Score
+    
+    def Spatial_score(self, Joueur:object, Board: object):
+        Board_mask = Board.Get_board_mask()
+        if Joueur.couleur == "X":
+            return np.dot(Board_mask.flatten(), HEATMAP.flatten()) *(-1)
+        else:
+            return np.dot(Board_mask.flatten(), HEATMAP.flatten())
+    
+    
+    
 
     def Explore_moves_slow(self, Board: object, Player: object, Turn : int, Depth, Score_type):
         #Current_player = Joueur_liste[Turn%2]

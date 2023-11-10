@@ -57,12 +57,20 @@ class engine(object):
                         Counter+=1
         return Counter
     
-    def Count_score(self, Board:object, couleur:str):
+    def Count_score_less_slow(self, Board:object, couleur:str):
         Counter = 0
         for pawn in Board.Pawn_list:
             if pawn.couleur == couleur:
                 Counter+=1
         return Counter
+    
+    def Count_score(self, Board:object, couleur:str):
+        Counter = 0
+        Board_mask = Board.Get_board_mask()
+        if couleur == "X":
+            return Board_mask.sum() *(-1)
+        else:
+            return Board_mask.sum()
 
     def Get_all_permutationAble_squares(self, Board:object, couleur:str):
         Coords = np.where(Board.board == board_file.NULL_VALUE)

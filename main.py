@@ -125,6 +125,7 @@ if __name__ == '__main__':
     Nbr_iter = 20
     print(f'Starting {Nbr_iter} iterations')
     while i<Nbr_iter:
+        print(f'Starting {i} : {Nbr_iter} iterations', end = "\r")
         if GUI_PYGAME_SHOW:
             gui_n = GUI.Gui()
             gui = GUI_pygame.SCREEN()
@@ -166,6 +167,7 @@ if __name__ == '__main__':
 
             print(__location__)
             df.to_csv(os.path.join(__location__, f'Stat_store/Function_call_{int(time.time())}_iter_{int(len(df)/2)}.csv'))
+            
         else:
             p_list = main_pygame()
         i+=1
