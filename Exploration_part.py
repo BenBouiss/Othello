@@ -5,6 +5,7 @@ import pawn_file
 import numpy as np
 import board_file
 import time
+import os
 
 ENGINE = engine_file.engine()
 
@@ -91,18 +92,35 @@ class Exploration(object):
             Rand_best = Best_arr[rand_ind]
             #print(f'Turn : {Turn} Decision for player : {Player.couleur} best move : {Rand_best} with score {Best_score} \n All other : {All_moves} with scores : {Scores_l}')
             return Best_score, Rand_best
+
     def Explore_moves(self, Board: object, Player: object, Turn : int, Depth, Score_type):
-        #Current_player = Joueur_liste[Turn%2]
+        global DEPTH_MAX, Counter_min_max, Counter_alpha_beta
+        DEPTH_MAX = Depth
+        Counter_min_max = 0
+        #Best_score, Best_move = self.Explore_moves_min_max(Board, Player, Turn, Depth, Score_type)
+        #print(f'Best score minmax = {Best_score} Move : {Best_move} n° of branches : {Counter_min_max}')
+
+        alpha = -99999
+        beta = 99999
         
-        
+        Counter_alpha_beta = 0
+        Best_score, Best_move = self.Explore_moves_alpha_beta(Board, Player, Turn, Depth, Score_type, alpha, beta)
+
+        #print(f'Best score alpha-beta = {Best_score} Move : {Best_move} n° of branches : {Counter_alpha_beta}')
+        return Best_score, Best_move
+
+    def Explore_moves_min_max(self, Board: object, Player: object, Turn : int, Depth, Score_type):
+        global Counter_min_max  
+        Counter_min_max+=1
         All_moves = ENGINE.Get_all_permutationAble_squares(Board, Player.couleur)
         if Depth == 0 or All_moves == []:
             if Score_type == "Standard":
-                return self.Score(Player), None
+                return self.Score(Player)
             if Score_type == "Spatial":
-                return self.Spatial_score(Player, Board), None
+                return self.Spatial_score(Player, Board)
             
         Scores_l = []
+        Max_score = -9999
         for moves in All_moves:
             pos_str = utils.Convert_coord_to_string(moves)
             Board.place_pawn(pos_str, Player.couleur)
@@ -114,26 +132,80 @@ class Exploration(object):
             Player.Score = ENGINE.Count_score(Board, Player.couleur)
             Player.Score_l.append(self.Score)
 
-            Scores_predi, _ = self.Explore_moves(Board, Player, Turn+1, Depth-1, Score_type)
-            Scores_l.append(Scores_predi)
+            Scores_predi = self.Explore_moves_min_max(Board, Player, Turn+1, Depth-1, Score_type) * (-1 if Turn%2!=0 else 1)
+            
+            if Scores_predi > Max_score:
+                Max_score = Scores_predi
+                if Depth == DEPTH_MAX:
+                    Next_move = moves
 
             ### Clean up
             Player.Undo_move()
             Board.remove_pawn(pos_str)
             Board, nbr_permutted = ENGINE.Inverts_pawns(Board, permuts)
+        #print(DEPTH_MAX, "xxxxxxxxxxxxxxxxxxxxxxx \n")
+        if Depth == DEPTH_MAX:
+            return Max_score, Next_move
+        else:
+            return Max_score
+            
 
-        if len(Scores_l) != 0:
-            arr = np.array(Scores_l)
-            if Turn%2 == 0:
-                Best_score = arr.max()
-            else:
-                Best_score = arr.min()
+        #if len(Scores_l) != 0:
+        #    arr = np.array(Scores_l)
+        #    if Turn%2 == 0:
+        #        Best_score = arr.max()
+        #    else:
+        #        Best_score = arr.min()
 
-            Select_mask = arr == Best_score
-            Best_arr = np.array(All_moves)[Select_mask]
+            #Select_mask = arr == Best_score
+            #Best_arr = np.array(All_moves)[Select_mask]
             #print(Scores_l, All_moves, Select_mask)
-            rand_ind = np.random.choice(len(Best_arr))
-            Rand_best = Best_arr[rand_ind]
+            #rand_ind = np.random.choice(len(Best_arr))
+            #Rand_best = Best_arr[rand_ind]
             #print(f'Turn : {Turn} Decision for player : {Player.couleur} best move : {Rand_best} with score {Best_score} \n All other : {All_moves} with scores : {Scores_l}')
-            return Best_score, Rand_best
+            
         
+
+    def Explore_moves_alpha_beta(self, Board: object, Player: object, Turn : int, Depth, Score_type, alpha, beta):
+        global Counter_alpha_beta
+        Counter_alpha_beta+=1
+        All_moves = ENGINE.Get_all_permutationAble_squares(Board, Player.couleur)
+        if Depth == 0 or All_moves == []:
+            if Score_type == "Standard":
+                return self.Score(Player)
+            if Score_type == "Spatial":
+                return self.Spatial_score(Player, Board)
+            
+        Scores_l = []
+        Max_score = -9999
+        for moves in All_moves:
+            pos_str = utils.Convert_coord_to_string(moves)
+            Board.place_pawn(pos_str, Player.couleur)
+
+            Pawn_placed = pawn_file.pawn(Player.couleur, moves)
+            permuts = ENGINE.verify_move(Board, Pawn_placed)
+            Board, nbr_permutted = ENGINE.Inverts_pawns(Board, permuts)
+
+            Player.Score = ENGINE.Count_score(Board, Player.couleur)
+            Player.Score_l.append(self.Score)
+
+            Scores_predi = self.Explore_moves_alpha_beta(Board, Player, Turn+1, Depth-1, Score_type, -beta, -alpha) * (-1 if Turn%2!=0 else 1)
+
+            ### Clean up
+            Player.Undo_move()
+            Board.remove_pawn(pos_str)
+            Board, nbr_permutted = ENGINE.Inverts_pawns(Board, permuts)
+            if Scores_predi > Max_score:
+                Max_score = Scores_predi
+                if Depth == DEPTH_MAX:
+                    Next_move = moves
+
+            if Max_score > alpha:
+                alpha = Max_score
+            if alpha >= beta:
+                break
+
+        if Depth == DEPTH_MAX:
+            return Max_score, Next_move
+        else:
+            return Max_score
