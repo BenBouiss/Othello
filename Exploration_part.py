@@ -6,6 +6,7 @@ import numpy as np
 import board_file
 import time
 import os
+import random
 
 ENGINE = engine_file.engine()
 
@@ -106,7 +107,7 @@ class Exploration(object):
         Counter_alpha_beta = 0
         Best_score, Best_move = self.Explore_moves_alpha_beta(Board, Player, Turn, Depth, Score_type, alpha, beta)
 
-        #print(f'Best score alpha-beta = {Best_score} Move : {Best_move} n° of branches : {Counter_alpha_beta}')
+        print(f'Best score alpha-beta = {Best_score} Move : {Best_move} n° of branches : {Counter_alpha_beta}')
         return Best_score, Best_move
 
     def Explore_moves_min_max(self, Board: object, Player: object, Turn : int, Depth, Score_type):
@@ -121,6 +122,8 @@ class Exploration(object):
             
         Scores_l = []
         Max_score = -9999
+        random.shuffle(All_moves)
+        scores = []
         for moves in All_moves:
             pos_str = utils.Convert_coord_to_string(moves)
             Board.place_pawn(pos_str, Player.couleur)
@@ -132,8 +135,8 @@ class Exploration(object):
             Player.Score = ENGINE.Count_score(Board, Player.couleur)
             Player.Score_l.append(self.Score)
 
-            Scores_predi = self.Explore_moves_min_max(Board, Player, Turn+1, Depth-1, Score_type) * (-1 if Turn%2!=0 else 1)
-            
+            Scores_predi = -self.Explore_moves_min_max(Board, Player, Turn+1, Depth-1, Score_type)
+            scores.append(Scores_predi)
             if Scores_predi > Max_score:
                 Max_score = Scores_predi
                 if Depth == DEPTH_MAX:
@@ -145,8 +148,11 @@ class Exploration(object):
             Board, nbr_permutted = ENGINE.Inverts_pawns(Board, permuts)
         #print(DEPTH_MAX, "xxxxxxxxxxxxxxxxxxxxxxx \n")
         if Depth == DEPTH_MAX:
+            #print(f'Turn : {Turn} Decision for player : {Player.couleur} best move : {Next_move} with score {Max_score}, {scores}')
+            #input()
             return Max_score, Next_move
         else:
+            #print(f'Turn : {Turn} Decision for player : {Player.couleur} with score {Max_score}, {scores}')
             return Max_score
             
 
@@ -178,6 +184,7 @@ class Exploration(object):
             
         Scores_l = []
         Max_score = -9999
+        random.shuffle(All_moves)
         for moves in All_moves:
             pos_str = utils.Convert_coord_to_string(moves)
             Board.place_pawn(pos_str, Player.couleur)
@@ -189,7 +196,7 @@ class Exploration(object):
             Player.Score = ENGINE.Count_score(Board, Player.couleur)
             Player.Score_l.append(self.Score)
 
-            Scores_predi = self.Explore_moves_alpha_beta(Board, Player, Turn+1, Depth-1, Score_type, -beta, -alpha) * (-1 if Turn%2!=0 else 1)
+            Scores_predi = -self.Explore_moves_alpha_beta(Board, Player, Turn+1, Depth-1, Score_type, -beta, -alpha)
 
             ### Clean up
             Player.Undo_move()

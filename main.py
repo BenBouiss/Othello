@@ -12,7 +12,7 @@ import os
 import cProfile
 
 
-GUI_PYGAME_SHOW = False
+GUI_PYGAME_SHOW = True
 PRINT_SHOW = False
 SAVE_CSV_FILE = True
 RUN_CPROFILER = False
@@ -134,8 +134,9 @@ if __name__ == '__main__':
         Player_list = []
         
         ### Ordinateur exploration depth 4 contre version spatial exploration
-        Player_list.append(Player_file.Joueur_ordinateur('O', Strategy="Exploration", Depth=3))
-        Player_list.append(Player_file.Joueur_ordinateur('X', Strategy="Exploration_spatial", Depth=3))
+        Player_list.append(Player_file.Joueur_ordinateur('O', Strategy="Exploration", Depth=5))
+        Player_list.append(Player_file.Joueur_ordinateur('X'))
+        #Player_list.append(Player_file.Joueur_ordinateur('X', Strategy="Exploration_spatial", Depth=3))
 
         ### Joueur contre Joueur
         #Player_list.append(Player_file.Joueur_humain('O'))
