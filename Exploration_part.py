@@ -107,7 +107,7 @@ class Exploration(object):
         Counter_alpha_beta = 0
         Best_score, Best_move = self.Explore_moves_alpha_beta(Board, Player, Turn, Depth, Score_type, alpha, beta)
 
-        print(f'Best score alpha-beta = {Best_score} Move : {Best_move} n° of branches : {Counter_alpha_beta}')
+        #print(f'Best score alpha-beta = {Best_score} Move : {Best_move} n° of branches : {Counter_alpha_beta}')
         return Best_score, Best_move
 
     def Explore_moves_min_max(self, Board: object, Player: object, Turn : int, Depth, Score_type):
@@ -178,9 +178,9 @@ class Exploration(object):
         All_moves = ENGINE.Get_all_permutationAble_squares(Board, Player.couleur)
         if Depth == 0 or All_moves == []:
             if Score_type == "Standard":
-                return self.Score(Player)
+                return -self.Score(Player)
             if Score_type == "Spatial":
-                return self.Spatial_score(Player, Board)
+                return -self.Spatial_score(Player, Board)
             
         Scores_l = []
         Max_score = -9999
