@@ -82,7 +82,7 @@ class Exploration(object):
         Start_alpha_beta = time.time()
         Best_score, Best_move = self.Explore_moves_alpha_beta(Board, Player, Turn, Depth, Score_type, alpha, beta)
         Time_alpha_beta = round(time.time() - Start_alpha_beta, 2)
-        os.system('clear')
+        os.system('cls')
         #print(f'Best score minmax = {Best_score} Move : {Best_move} n° of branches : {Counter_min_max}')
         print(f'Best score alpha-beta = {Best_score} Move : {Best_move} n° of branches : {Counter_alpha_beta} with depth : {DEPTH_MAX} in : {Time_alpha_beta} s')
         size = getsizeof(Transposition_table)

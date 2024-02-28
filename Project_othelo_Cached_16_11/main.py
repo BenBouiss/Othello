@@ -151,7 +151,7 @@ if __name__ == '__main__':
         Player_list = []
         
         ### Ordinateur exploration depth 4 contre version spatial exploration
-        Player_list.append(Player_file.Joueur_ordinateur('O', Strategy="Exploration", Depth=5, Use_transposition=False))
+        Player_list.append(Player_file.Joueur_ordinateur('O', Strategy="Exploration", Depth=5, Use_transposition=True))
         Player_list.append(Player_file.Joueur_ordinateur('X'))
         #Player_list.append(Player_file.Joueur_ordinateur('X', Strategy="Exploration_spatial", Depth=3))
 
